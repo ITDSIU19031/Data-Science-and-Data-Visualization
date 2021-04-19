@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="para1">
+        <center>
+            <h1>
+                <font face="Times New Roman" size="16">Lab 2 – Introduction to D3.js</font>
+            </h1>
+        </center>
+        <font face="Times New Roman" size="8" color="387c6d"> Mai Dang Nhat Anh </font>
+        <br>
+        <font face="Times New Roman" size="8" color="7eca9c"><i>ITDSIU19031</i></font>
+        <br>
+        <font face="Times New Roman" size="8" color="7eca9c"><i>Data Science and Data Visualization</i></font>
+        <br>
+        <font face="Times New Roman" size="8" color="7eca9c"><i>This is all my own work. I did not copy the code from
+                any other source</i></font>
+        <br>
+        <br>
+        <center>
+            <font face="Times New Roman" size="8"><b> Bar Chart</b></font>
+        </center>
+    </div>
+
+    <script src='https://d3js.org/d3.v4.min.js'></script>
+    <script>
+        var w = 1500;
+        var h = 500;
+
+        var svg = d3.select("body")
+            .append("svg")
+            .attr("width", w)
+            .attr("height", h);
+        // Scatterplot chart 
+        var margin = { top: 60, right: 0, bottom: 90, left: 0 },
+            w = 700 - margin.left - margin.right,
+            h = 570 - margin.top - margin.bottom;
+
+        d3.csv("https://tungth.github.io/data/vn-provinces-data.csv", function (data) {
+
+            // X axis set scale
+            var x = d3.scaleLinear()
+                .domain([0, 5000])
+                .range([40, w + 700]);
+
+            // Y axis set scale
+            var y = d3.scaleLinear()
+                .domain([0, 200])
+                .range([h, 10]);
+
+
+
+            // Add dots
+            svg.append('g')
+                .selectAll("dot")
+                .data(data)
+                .enter()
+                .append("circle")
+                .attr("cx", function (d) { return x(d.population); })
+                .attr("cy", function (d) { return y(parseFloat(d["GRDP-VND"])); })
+                .attr("r", 4)
+                .attr("fill", function (d) { return "rgb(0, 100, " + d.density + ")"; });
+            // Add value for circles
+            svg.selectAll("text")
+                .data(data)
+                .enter()
+                .append("text")
+                .text(function (d) {
+                    return d.area + "---" + d.province;
+                })
+                .attr("x", function (d) {
+                    return x(d.population) + 5;
+                })
+                .attr("y", function (d) {
+                    return y(parseFloat(d["GRDP-VND"]));
+                })
+                .attr("font-family", "arial")
+                .attr("font-size", "8px")
+                .attr("fill", "green");
+
+
+            // X AXIS - location & label
+            svg.append("g")
+                .attr("transform", "translate(0," + h + ")")
+                .call(d3.axisBottom(x).ticks(30))
+            svg.append("text")
+                .attr("class", "x label")
+                .attr("text-anchor", "end")
+                .attr("x", w + 800)
+                .attr("y", h + 10)
+                .text("Population")
+                .style('fill', 'BLACK');
+
+            // Y AXIS - location & label
+            svg.append("g")
+                .call(d3.axisLeft(y).ticks(20))
+                .attr("transform", "translate(" + (w - 660) + ", 0)")
+
+            svg.append("text")
+                .attr("class", "y label")
+                .attr("text-anchor", "end")
+                .attr("x", w - 570)
+                .attr("y", h - 409)
+                .text("GRDP-VND")
+                .style('fill', 'BLACK');
+
+            // Chart lable
+            svg.append("text")
+                .attr("class", "y label")
+                .attr("text-anchor", "end")
+                .attr("x", w + 300)
+                .attr("y", h - 400)
+                .text("Scatterplot – population vs GRPD")
+                .style('fill', 'RED')
+                .attr("font-size", "30px");
+        })
+               /* csv('https://tungth.github.io/data/vn-provinces-data.csv')
+               .then(data => {
+                   data.forEach(d => {
+
+                       d.population = +d.population;
+                       d.GRDP = +d["GRDP-VND"];
+                   });
+                   render(data);
+               })*/
+
+    </script>
+</body>
+
+</html>
